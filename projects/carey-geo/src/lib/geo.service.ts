@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { GEO_CONFIG_TOKEN } from './models/token';
 import { GeoConfig } from './models/geo-config';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class GeoService {
 
   private _allCountries: Country[];
