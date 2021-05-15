@@ -7,11 +7,12 @@ import { Observable } from 'rxjs';
 import { GEO_CONFIG_TOKEN } from './models/token';
 import { GeoConfig } from './models/geo-config';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class GeoService {
 
   private _allCountries: Country[];
   private _allStates: State[];
+  private _allTimezones: string[];
 
   constructor(private http: HttpClient,
     @Inject(GEO_CONFIG_TOKEN) private readonly config: GeoConfig) { }
@@ -22,6 +23,10 @@ export class GeoService {
 
   get allStates() {
     return this._allStates;
+  }
+
+  get allTimezones() {
+    return this._allTimezones;
   }
 
   initializeAllCountries(): Observable<Country[]> {
@@ -42,6 +47,17 @@ export class GeoService {
       map(states => {
         this._allStates = states;
         return states;
+      })
+    )
+  }
+
+  initializeAllTimezones(): Observable<string[]> {
+    let zonesObservable$ = this.http.get<string[]>(`${this.config.baseUrl}/timezones`);
+
+    return zonesObservable$.pipe(
+      map(zones => {
+        this._allTimezones = zones;
+        return zones;
       })
     )
   }
