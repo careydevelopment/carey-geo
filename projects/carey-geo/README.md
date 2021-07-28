@@ -1,24 +1,22 @@
-# CareyGeo
+![Carey Development Logo](http://careydevelopment.us/img/branding/careydevelopment-logo-sm.png)
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.9.
+# Carey Development Geo Module
 
-## Code scaffolding
+![license](https://img.shields.io/badge/license-MIT-blue.svg) 
 
-Run `ng generate component component-name --project carey-geo` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project carey-geo`.
-> Note: Don't forget to add `--project carey-geo` or else it will be added to the default project in your `angular.json` file. 
 
-## Build
+## Overview
+This package handles geo-related tasks (such as info about states, countries, and currencies) for the 
+Carey Development ecosystem.
 
-Run `ng build carey-geo` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Usage: Installation
+It's easy to install this package:
+```
+npm install carey-geo
+```
 
-## Publishing
+Once you've installed it, you can begin using the models and service included in the package.
 
-After building your library with `ng build carey-geo`, go to the dist folder `cd dist/carey-geo` and run `npm publish`.
+## License
+This code is under the [MIT License](https://github.com/careydevelopment/carey-geo/blob/master/LICENSE).
 
-## Running unit tests
-
-Run `ng test carey-geo` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
