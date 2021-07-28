@@ -1,4 +1,5 @@
 import { ModuleWithProviders, NgModule } from '@angular/core';
+import { GeoService } from './geo.service';
 import { GeoConfig } from './models/geo-config';
 import { GEO_CONFIG_TOKEN } from './models/token';
 
@@ -9,6 +10,9 @@ import { GEO_CONFIG_TOKEN } from './models/token';
   imports: [
   ],
   exports: [
+  ],
+  providers: [
+    GeoService
   ]
 })
 export class GeoModule {

@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Country } from './models/country';
 import { State } from './models/state';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { GEO_CONFIG_TOKEN } from './models/token';
 import { GeoConfig } from './models/geo-config';
 
@@ -12,6 +12,7 @@ export class GeoService {
 
   private _allCountries: Country[];
   private _allStates: State[];
+  private _allTimezones: string[];
 
   constructor(private http: HttpClient,
     @Inject(GEO_CONFIG_TOKEN) private readonly config: GeoConfig) { }
@@ -24,26 +25,44 @@ export class GeoService {
     return this._allStates;
   }
 
-  initializeAllCountries(): Observable<Country[]> {
-    let countriesObservable$ = this.http.get<Country[]>(`${this.config.baseUrl}/countries`);
-
-    return countriesObservable$.pipe(
-      map(countries => {
-        this._allCountries = countries;
-        return countries;
-      })
-    )
+  get allTimezones() {
+    return this._allTimezones;
   }
 
-  initializeAllStates(): Observable<State[]> {
-    let statesObservable$ = this.http.get<State[]>(`${this.config.baseUrl}/states`);
+  fetchAllCountries(): Observable<Country[]> {
+    if (!this._allCountries) {
+      let countriesObservable$ = this.http.get<Country[]>(`${this.config.baseUrl}/countries`);
 
-    return statesObservable$.pipe(
-      map(states => {
-        this._allStates = states;
-        return states;
-      })
-    )
+      return countriesObservable$.pipe(
+        tap(countries => this._allCountries = countries)
+      )
+    } else {
+      return of(this._allCountries);
+    }
+  }
+
+  fetchAllStates(): Observable<State[]> {
+    if (!this._allStates) {
+      let statesObservable$ = this.http.get<State[]>(`${this.config.baseUrl}/states`);
+
+      return statesObservable$.pipe(
+        tap(states => this._allStates = states)
+      )
+    } else {
+      return of(this._allStates);
+    }
+  }
+
+  fetchAllTimezones(): Observable<string[]> {
+    if (!this._allTimezones) {
+      let zonesObservable$ = this.http.get<string[]>(`${this.config.baseUrl}/timezones`);
+
+      return zonesObservable$.pipe(
+        tap(zones => this._allTimezones = zones)
+      )
+    } else {
+      return of(this._allTimezones);
+    }
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -54,7 +73,7 @@ export class GeoService {
     let code: string = null;
 
     if (!this.allCountries) {
-      this.initializeAllCountries().subscribe(
+      this.fetchAllCountries().subscribe(
         (countries: Country[]) => code = this.findCountryCode(abbreviation)
       )
     } else {
