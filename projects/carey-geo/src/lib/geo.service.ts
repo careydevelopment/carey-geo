@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Country } from './models/country';
 import { State } from './models/state';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { GEO_CONFIG_TOKEN } from './models/token';
 import { GeoConfig } from './models/geo-config';
 
@@ -29,37 +29,40 @@ export class GeoService {
     return this._allTimezones;
   }
 
-  initializeAllCountries(): Observable<Country[]> {
-    let countriesObservable$ = this.http.get<Country[]>(`${this.config.baseUrl}/countries`);
+  fetchAllCountries(): Observable<Country[]> {
+    if (!this._allCountries) {
+      let countriesObservable$ = this.http.get<Country[]>(`${this.config.baseUrl}/countries`);
 
-    return countriesObservable$.pipe(
-      map(countries => {
-        this._allCountries = countries;
-        return countries;
-      })
-    )
+      return countriesObservable$.pipe(
+        tap(countries => this._allCountries = countries)
+      )
+    } else {
+      return of(this._allCountries);
+    }
   }
 
-  initializeAllStates(): Observable<State[]> {
-    let statesObservable$ = this.http.get<State[]>(`${this.config.baseUrl}/states`);
+  fetchAllStates(): Observable<State[]> {
+    if (!this._allStates) {
+      let statesObservable$ = this.http.get<State[]>(`${this.config.baseUrl}/states`);
 
-    return statesObservable$.pipe(
-      map(states => {
-        this._allStates = states;
-        return states;
-      })
-    )
+      return statesObservable$.pipe(
+        tap(states => this._allStates = states)
+      )
+    } else {
+      return of(this._allStates);
+    }
   }
 
-  initializeAllTimezones(): Observable<string[]> {
-    let zonesObservable$ = this.http.get<string[]>(`${this.config.baseUrl}/timezones`);
+  fetchAllTimezones(): Observable<string[]> {
+    if (!this._allTimezones) {
+      let zonesObservable$ = this.http.get<string[]>(`${this.config.baseUrl}/timezones`);
 
-    return zonesObservable$.pipe(
-      map(zones => {
-        this._allTimezones = zones;
-        return zones;
-      })
-    )
+      return zonesObservable$.pipe(
+        tap(zones => this._allTimezones = zones)
+      )
+    } else {
+      return of(this._allTimezones);
+    }
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -70,7 +73,7 @@ export class GeoService {
     let code: string = null;
 
     if (!this.allCountries) {
-      this.initializeAllCountries().subscribe(
+      this.fetchAllCountries().subscribe(
         (countries: Country[]) => code = this.findCountryCode(abbreviation)
       )
     } else {
